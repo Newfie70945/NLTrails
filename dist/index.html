@@ -63,6 +63,10 @@
               <button class="active" data-basemap="street" aria-pressed="true">Map</button>
               <button data-basemap="satellite" aria-pressed="false">Satellite</button>
             </div>
+            <div class="poi-switcher" aria-label="Toggle map points">
+              <button class="active" data-poi="shelter" aria-pressed="true"><span>⌂</span> Warm-up shacks</button>
+              <button data-poi="service" aria-pressed="false"><span>＋</span> POIs</button>
+            </div>
             <div class="map-controls">
               <button id="zoomIn" aria-label="Zoom in">+</button><button id="zoomOut" aria-label="Zoom out">−</button>
               <button id="locateMe" aria-label="Find my location">⌖</button>
@@ -99,10 +103,15 @@
       <button class="close-btn" data-close aria-label="Close trail details">×</button>
       <div class="detail-visual" id="detailVisual"><span id="detailType">WALKING</span><button id="modalSave" aria-label="Save trail">♡</button></div>
       <div class="detail-content">
-        <p class="eyebrow" id="detailRegion"></p><h2 id="modalTitle"></h2><p id="detailDescription"></p>
-        <div class="detail-stats"><div><small>Distance</small><b id="detailDistance"></b></div><div><small>Difficulty</small><b id="detailDifficulty"></b></div><div><small>Est. time</small><b id="detailTime"></b></div></div>
+        <p class="eyebrow" id="detailRegion"></p><h2 id="modalTitle"></h2>
+        <div class="detail-rating" id="detailRating" hidden></div>
+        <div class="detail-stats"><div><small>Distance</small><b id="detailDistance"></b></div><div><small>Difficulty</small><b id="detailDifficulty"></b></div><div><small>Est. time</small><b id="detailTime"></b></div><div><small>Elevation</small><b id="detailElevation"></b></div></div>
+        <div class="detail-tabs" role="tablist"><button class="active" data-detail-tab="overview">Overview</button><button data-detail-tab="plan">Plan</button><button data-detail-tab="nearby">Nearby POIs <b id="nearbyCount">0</b></button></div>
+        <section class="detail-panel active" data-detail-panel="overview"><p id="detailDescription"></p><div class="feature-chips" id="detailFeatures"></div></section>
+        <section class="detail-panel" data-detail-panel="plan"><dl class="route-facts"><div><dt>Route type</dt><dd id="detailRouteType"></dd></div><div><dt>Map status</dt><dd id="detailMapStatus"></dd></div><div><dt>Trail use</dt><dd id="detailUse"></dd></div><div><dt>Access</dt><dd id="detailAccess"></dd></div></dl><div class="detail-links" id="detailLinks"></div></section>
+        <section class="detail-panel" data-detail-panel="nearby"><div class="nearby-list" id="nearbyList"></div></section>
         <div class="condition-row"><span class="condition-good">●</span><div><b id="detailCondition"></b><small>Confirm current access and conditions before travel</small></div></div>
-        <button class="primary-action" id="startRoute">Show full trail on map <span>⌖</span></button>
+        <div class="detail-actions"><button class="primary-action" id="startRoute">Show trail on map <span>⌖</span></button><a class="secondary-action" id="trailDirections" target="_blank" rel="noopener">Directions</a></div>
       </div>
     </article>
   </div>
@@ -114,6 +123,7 @@
   <script src="gnta-data.js"></script>
   <script src="north-data.js"></script>
   <script src="mapped-data.js"></script>
+  <script src="enriched-data.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
