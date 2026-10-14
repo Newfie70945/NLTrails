@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#13291f" />
+  <meta name="description" content="Explore walking, skidoo, and ATV trails across Newfoundland." />
+  <title>Akidoo Trails — Newfoundland</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a href="#" class="brand" aria-label="Akidoo Trails home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 44 44"><path d="M4 34 15 14l7 10 5-8 13 18H4Z"/><path d="m10 34 7-10 4 6 5-7 8 11"/></svg>
+        </span>
+        <span><b>AKIDOO</b><small>TRAILS · NEWFOUNDLAND</small></span>
+      </a>
+      <nav class="desktop-nav" aria-label="Main navigation">
+        <button class="nav-link active" data-section="explore">Explore</button>
+        <button class="nav-link" data-section="saved">Saved</button>
+        <button class="nav-link" data-section="safety">Trail safety</button>
+      </nav>
+      <div class="header-actions">
+        <span class="weather"><span>☁</span><b>4°</b><small>West Coast</small></span>
+        <button class="round-btn" id="profileBtn" aria-label="Open profile">AT</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero-copy">
+        <div>
+          <p class="eyebrow">YOUR NEXT RIDE STARTS HERE</p>
+          <h1>Find your way<br><em>into the wild.</em></h1>
+        </div>
+        <p class="intro">Walking paths, skidoo routes, and ATV trails across Newfoundland—mapped for the way you move.</p>
+      </section>
+
+      <section class="mode-switcher" aria-label="Choose trail type">
+        <button class="mode active" data-mode="all"><span class="mode-icon">✦</span><span><b>All trails</b><small>Explore everything</small></span></button>
+        <button class="mode" data-mode="walking"><span class="mode-icon walking">⌁</span><span><b>Walking</b><small>Boots on the ground</small></span></button>
+        <button class="mode" data-mode="skidoo"><span class="mode-icon skidoo">❄</span><span><b>Skidoo</b><small>Chase the snow</small></span></button>
+        <button class="mode" data-mode="atv"><span class="mode-icon atv">⬡</span><span><b>ATV</b><small>Take the rough road</small></span></button>
+      </section>
+
+      <section class="explorer" id="explorer">
+        <div class="map-panel">
+          <div class="map-toolbar">
+            <label class="search-box">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
+              <input id="searchInput" type="search" placeholder="Search trails or regions" aria-label="Search trails or regions" />
+            </label>
+            <button class="filter-btn" id="filterBtn"><span>☷</span> Filters <b id="filterCount">0</b></button>
+          </div>
+
+          <div class="map" id="trailMap" aria-label="Illustrated map of Newfoundland trails">
+            <svg class="terrain" viewBox="0 0 860 690" role="img" aria-label="Map of the island of Newfoundland">
+              <defs>
+                <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#8da497" stroke-opacity=".10"/></pattern>
+                <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#10241c" flood-opacity=".14"/></filter>
+              </defs>
+              <rect width="860" height="690" fill="url(#grid)"/>
+              <path class="island" filter="url(#shadow)" d="M154 101c45-22 103-33 155-18 27 8 45 28 65 47 19 18 50 21 71 5 25-19 40-58 75-61 27-3 50 20 52 46 2 24-16 40-19 62-2 22 14 43 36 48 30 7 69-9 89 20 19 27-1 58-18 79-24 28-29 55-16 90 13 33-4 74-35 91-27 14-58 4-84 20-29 18-36 55-65 73-35 21-75 5-110 19-35 13-58 54-95 58-29 3-61-20-57-51 4-29 40-40 46-69 5-29-21-49-30-74-10-29 0-61-8-90-9-31-46-47-55-78-10-34 13-72 50-78 24-4 54 12 73-7 22-22 6-53-17-69-31-22-81-23-96 18-11 30 7 59 0 87-7 28-42 47-68 34-32-16-43-60-14-87 12-11 29-14 45-22Z"/>
+              <g class="contours" fill="none">
+                <path d="M199 155c88-34 151-3 195 45s98 43 142 16"/>
+                <path d="M152 280c95-28 182 19 226 84s109 94 197 65"/>
+                <path d="M177 431c72-31 142-16 192 38s101 65 151 47"/>
+                <path d="M269 113c-16 80 28 123 70 157s60 102 40 167"/>
+              </g>
+              <g id="routeLines"></g>
+            </svg>
+            <div id="markers"></div>
+            <span class="map-label label-west">GROS MORNE</span>
+            <span class="map-label label-central">CENTRAL</span>
+            <span class="map-label label-east">AVALON</span>
+            <div class="map-controls">
+              <button aria-label="Zoom in">+</button><button aria-label="Zoom out">−</button>
+              <button aria-label="Find my location">⌖</button>
+            </div>
+            <div class="map-legend"><span><i class="walk-dot"></i> Walking</span><span><i class="ski-dot"></i> Skidoo</span><span><i class="atv-dot"></i> ATV</span></div>
+            <span class="demo-badge">DEMO TRAIL DATA</span>
+          </div>
+        </div>
+
+        <aside class="trail-drawer" id="trailDrawer">
+          <div class="drawer-head">
+            <div><span class="result-count" id="resultCount">6 routes</span><h2>Trails near you</h2></div>
+            <button id="sortBtn" class="sort-btn">Nearby <span>⌄</span></button>
+          </div>
+          <div class="trail-list" id="trailList"></div>
+        </aside>
+      </section>
+
+      <section class="safety-strip" id="safety">
+        <div><span class="safety-icon">✚</span><div><p class="eyebrow">BEFORE YOU HEAD OUT</p><h2>Wild places demand good plans.</h2></div></div>
+        <div class="safety-tips"><span>Check conditions</span><span>Tell someone your route</span><span>Pack for weather</span></div>
+        <button id="safetyBtn">Read trail safety <span>→</span></button>
+      </section>
+    </main>
+
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+      <button class="active"><span>⌖</span>Explore</button><button><span>♡</span>Saved</button><button><span>✚</span>Safety</button>
+    </nav>
+  </div>
+
+  <div class="modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <article class="detail-sheet">
+      <button class="close-btn" data-close aria-label="Close trail details">×</button>
+      <div class="detail-visual" id="detailVisual"><span id="detailType">WALKING</span><button id="modalSave" aria-label="Save trail">♡</button></div>
+      <div class="detail-content">
+        <p class="eyebrow" id="detailRegion"></p><h2 id="modalTitle"></h2><p id="detailDescription"></p>
+        <div class="detail-stats"><div><small>Distance</small><b id="detailDistance"></b></div><div><small>Difficulty</small><b id="detailDifficulty"></b></div><div><small>Est. time</small><b id="detailTime"></b></div></div>
+        <div class="condition-row"><span class="condition-good">●</span><div><b id="detailCondition"></b><small>Community condition update · demo</small></div></div>
+        <button class="primary-action" id="startRoute">Start route <span>→</span></button>
+      </div>
+    </article>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
