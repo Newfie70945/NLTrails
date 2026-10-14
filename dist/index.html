@@ -15,7 +15,7 @@
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <a href="#" class="brand" aria-label="Newfoundland Trails home">
+      <a href="#home" class="brand" id="brandHome" aria-label="Newfoundland Trails home">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 44 44"><path d="M4 34 15 14l7 10 5-8 13 18H4Z"/><path d="m10 34 7-10 4 6 5-7 8 11"/></svg>
         </span>
@@ -32,13 +32,25 @@
       </div>
     </header>
 
-    <main>
+    <section class="home-page" id="homePage">
+      <div class="home-hero">
+        <div class="home-copy"><p class="eyebrow">EXPLORE NEWFOUNDLAND YOUR WAY</p><h1>One island.<br><em>Two ways into the wild.</em></h1><p>Choose a focused map for hiking or for ATV and skidoo travel. Shared-use trails appear in both, with access details kept clear.</p></div>
+        <div class="experience-grid">
+          <button class="experience-card hiking-card" data-experience="walking"><span class="experience-icon">⌁</span><small>ON FOOT</small><h2>Hiking trails</h2><p>Mapped walks, elevation, difficulty, trailheads, and nearby points of interest.</p><b>Open hiking map <span>→</span></b></button>
+          <button class="experience-card offroad-card" data-experience="offroad"><span class="experience-icon">❄</span><small>ATV + SKIDOO</small><h2>Off-road &amp; snow</h2><p>ATV routes, snowmobile networks, warm-up shacks, crossings, and services.</p><b>Open off-road map <span>→</span></b></button>
+        </div>
+        <button class="all-trails-link" data-experience="all">Explore every trail together <span>→</span></button>
+      </div>
+      <div class="home-proof"><span><b>Verified details</b><small>Official and mapped information is labelled clearly</small></span><span><b>Community knowledge</b><small>Local reports remain distinct from verified updates</small></span><span><b>Built for Newfoundland</b><small>Walking, ATV, and skidoo routes in one trail system</small></span></div>
+    </section>
+
+    <main id="trailPage" hidden>
       <section class="hero-copy">
         <div>
-          <p class="eyebrow">YOUR NEXT RIDE STARTS HERE</p>
-          <h1>Find your way<br><em>into the wild.</em></h1>
+          <p class="eyebrow" id="experienceEyebrow">YOUR NEXT RIDE STARTS HERE</p>
+          <h1 id="experienceTitle">Find your way<br><em>into the wild.</em></h1>
         </div>
-        <p class="intro">Walking paths, skidoo routes, and ATV trails across Newfoundland—mapped for the way you move.</p>
+        <p class="intro" id="experienceIntro">Walking paths, skidoo routes, and ATV trails across Newfoundland—mapped for the way you move.</p>
       </section>
 
       <section class="mode-switcher" aria-label="Toggle trail map layers">
