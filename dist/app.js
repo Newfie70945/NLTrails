@@ -1,26 +1,39 @@
-const trails=[...TRAILS,...GNTA_TRAILS,...NORTHERN_TRAILS];
+const trails=[...TRAILS,...GNTA_TRAILS,...NORTHERN_TRAILS,...OSM_ROUTE_TRAILS].map(trail=>{
+  const mapped=GNTA_MAPPED[trail.id];
+  return mapped?{...trail,...mapped,precision:"mapped",condition:"Mapped trail line"}:trail;
+});
 
 const allTypes=["walking","skidoo","atv"];
 const state={activeTypes:new Set(allTypes),query:"",saved:new Set(JSON.parse(localStorage.getItem("nl-trails-saved")||localStorage.getItem("akidoo-saved")||"[]")),selected:1,sort:"Nearby",basemap:"street"};
 const list=document.querySelector("#trailList"),count=document.querySelector("#resultCount"),modal=document.querySelector("#detailModal"),toast=document.querySelector("#toast");
 const colors={walking:"#ed6f32",skidoo:"#4b8eaa",atv:"#788935",multiuse:"#76518d"};
 
-const map=L.map("trailMap",{zoomControl:false,minZoom:5,maxZoom:17,zoomSnap:.5}).setView([48.72,-56.05],6);
+const map=L.map("trailMap",{zoomControl:false,minZoom:5,maxZoom:17,zoomSnap:.5,preferCanvas:true}).setView([48.72,-56.05],6);
 const streetLayer=L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
 const satelliteLayer=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:'Tiles &copy; Esri — Sources: Esri, Maxar, Earthstar Geographics'});
 const trailLayer=L.layerGroup().addTo(map);
 let locationLayer=null;
+map.attributionControl.addAttribution('Trail geometry &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>');
+
+function decodePolyline(encoded){
+  const value=encoded.slice(1),points=[];let index=0,lat=0,lng=0;
+  while(index<value.length){
+    let byte,shift=0,result=0;do{byte=value.charCodeAt(index++)-63;result|=(byte&31)<<shift;shift+=5}while(byte>=32);lat+=(result&1)?~(result>>1):(result>>1);
+    shift=0;result=0;do{byte=value.charCodeAt(index++)-63;result|=(byte&31)<<shift;shift+=5}while(byte>=32);lng+=(result&1)?~(result>>1):(result>>1);
+    points.push([lat/1e5,lng/1e5]);
+  }
+  return points;
+}
+const nlsfGroomed=NLSF_SEGMENTS.filter(x=>x.c==="F").map(x=>decodePolyline(x.e));
+const nlsfUnmaintained=NLSF_SEGMENTS.filter(x=>x.c!=="F").map(x=>decodePolyline(x.e));
+
+function trailGeometry(trail){return trail.segments||trail.route||null}
+function trailPoints(trail){const geometry=trailGeometry(trail);return geometry?(trail.segments?geometry.flat():geometry):[trail.center]}
 
 function setBasemap(name){
   state.basemap=name;
   document.querySelectorAll("[data-basemap]").forEach(button=>{const active=button.dataset.basemap===name;button.classList.toggle("active",active);button.setAttribute("aria-pressed",String(active))});
-  const mapElement=document.querySelector("#trailMap"),live=document.querySelector("#nlsfLive"),frame=live.querySelector("iframe");
-  if(name==="nlsf"){
-    mapElement.classList.add("nlsf-view");live.hidden=false;
-    if(!frame.getAttribute("src"))frame.src=NLSF_LIVE;
-    return;
-  }
-  mapElement.classList.remove("nlsf-view");live.hidden=true;
+  document.querySelector("#trailMap").classList.toggle("satellite-view",name==="satellite");
   if(name==="satellite"){
     if(map.hasLayer(streetLayer))map.removeLayer(streetLayer);
     if(!map.hasLayer(satelliteLayer))satelliteLayer.addTo(map);
@@ -39,7 +52,7 @@ function filtered(){
 }
 
 function pinIcon(trail,selected){
-  const compact=trail.precision!=="official";
+  const compact=!['official','mapped'].includes(trail.precision);
   return L.divIcon({className:`akidoo-div-icon${selected?" is-selected":""}`,html:`<span class="map-pin${compact?" compact":""}" style="--pin-color:${colors[trail.type]}"><i></i></span>`,iconSize:compact?[24,24]:[34,34],iconAnchor:compact?[12,24]:[17,34],tooltipAnchor:[14,-14]});
 }
 
@@ -50,11 +63,18 @@ function updateLayerButtons(){
 
 function updateMap(items,fit=false){
   trailLayer.clearLayers();
+  if(state.activeTypes.has("walking"))L.polyline(OSM_WALKING_SEGMENTS,{color:colors.walking,weight:2,opacity:.42,interactive:false}).addTo(trailLayer);
+  if(state.activeTypes.has("skidoo")){
+    L.polyline(nlsfGroomed,{color:colors.skidoo,weight:3,opacity:.82,interactive:false}).addTo(trailLayer);
+    L.polyline(nlsfUnmaintained,{color:"#43535d",weight:2,opacity:.72,dashArray:"7 7",interactive:false}).addTo(trailLayer);
+  }
+  if(state.activeTypes.has("atv")&&OSM_ATV_SEGMENTS.length)L.polyline(OSM_ATV_SEGMENTS,{color:colors.atv,weight:3,opacity:.72,dashArray:"5 5",interactive:false}).addTo(trailLayer);
   items.forEach(t=>{
-    if(t.precision==="official"&&t.route?.length>1)L.polyline(t.route,{color:colors[t.type],weight:5,opacity:.9,lineCap:"round"}).on("click",()=>selectTrail(t.id,true)).addTo(trailLayer);
+    const geometry=trailGeometry(t);
+    if(["official","mapped"].includes(t.precision)&&geometry?.length)L.polyline(geometry,{color:colors[t.type],weight:5,opacity:.92,lineCap:"round"}).on("click",()=>selectTrail(t.id,true)).addTo(trailLayer);
     L.marker(t.center,{icon:pinIcon(t,state.selected===t.id),title:t.name,alt:`Open ${t.name}`}).bindTooltip(t.name,{direction:"right",className:"akidoo-tooltip",offset:[8,-15]}).on("click",()=>selectTrail(t.id,true)).addTo(trailLayer);
   });
-  if(fit&&items.length){const points=items.flatMap(t=>t.precision==="official"&&t.route?.length?t.route:[t.center]);map.fitBounds(L.latLngBounds(points).pad(.18),{animate:true,maxZoom:9});}
+  if(fit&&items.length){const points=items.flatMap(trailPoints);map.fitBounds(L.latLngBounds(points).pad(.18),{animate:true,maxZoom:9});}
 }
 
 function render(fitMap=false){
@@ -63,9 +83,9 @@ function render(fitMap=false){
   updateLayerButtons();updateMap(items,fitMap);
 }
 
-function selectTrail(id,open=false){const t=trails.find(x=>x.id===id);state.selected=id;if(state.basemap==="nlsf"&&t.type!=="skidoo")setBasemap("street");render(false);map.flyTo(t.center,Math.max(map.getZoom(),8),{duration:.65});if(open)openDetail(id)}
+function selectTrail(id,open=false){const t=trails.find(x=>x.id===id);state.selected=id;render(false);map.flyTo(t.center,Math.max(map.getZoom(),8),{duration:.65});if(open)openDetail(id)}
 function toggleSave(id){state.saved.has(id)?state.saved.delete(id):state.saved.add(id);localStorage.setItem("nl-trails-saved",JSON.stringify([...state.saved]));render(false);showToast(state.saved.has(id)?"Trail saved for later":"Removed from saved trails")}
-function openDetail(id){const t=trails.find(x=>x.id===id),source=document.querySelector("#detailSource");state.selected=id;document.querySelector("#detailVisual").className=`detail-visual ${t.type}`;document.querySelector("#detailType").textContent=t.badge||(t.type==="multiuse"?"MULTI-USE":t.type.toUpperCase());document.querySelector("#detailRegion").textContent=t.region;document.querySelector("#modalTitle").textContent=t.name;document.querySelector("#detailDescription").textContent=t.description;document.querySelector("#detailDistance").textContent=t.distance;document.querySelector("#detailDifficulty").textContent=t.difficulty;document.querySelector("#detailTime").textContent=t.time;document.querySelector("#detailCondition").textContent=t.condition;source.hidden=!t.source;if(t.source){source.href=t.source;source.firstChild.textContent=`View ${t.sourceLabel||"trail source"} `}document.querySelector("#modalSave").textContent=state.saved.has(id)?"♥":"♡";modal.hidden=false;document.body.style.overflow="hidden";document.querySelector(".close-btn").focus()}
+function openDetail(id){const t=trails.find(x=>x.id===id);state.selected=id;document.querySelector("#detailVisual").className=`detail-visual ${t.type}`;document.querySelector("#detailType").textContent=t.badge||(t.type==="multiuse"?"MULTI-USE":t.type.toUpperCase());document.querySelector("#detailRegion").textContent=t.region;document.querySelector("#modalTitle").textContent=t.name;document.querySelector("#detailDescription").textContent=t.description;document.querySelector("#detailDistance").textContent=t.distance;document.querySelector("#detailDifficulty").textContent=t.difficulty;document.querySelector("#detailTime").textContent=t.time;document.querySelector("#detailCondition").textContent=t.condition;document.querySelector("#modalSave").textContent=state.saved.has(id)?"♥":"♡";modal.hidden=false;document.body.style.overflow="hidden";document.querySelector(".close-btn").focus()}
 function closeDetail(){modal.hidden=true;document.body.style.overflow=""}
 let toastTimer;function showToast(message){toast.textContent=message;toast.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove("show"),2600)}
 
@@ -76,7 +96,7 @@ list.addEventListener("click",e=>{const save=e.target.closest("[data-save]");if(
 list.addEventListener("keydown",e=>{if(e.key==="Enter"){const card=e.target.closest("[data-id]");if(card)selectTrail(Number(card.dataset.id),true)}});
 document.querySelectorAll("[data-close]").forEach(x=>x.addEventListener("click",closeDetail));document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!modal.hidden)closeDetail()});
 document.querySelector("#modalSave").addEventListener("click",()=>{toggleSave(state.selected);document.querySelector("#modalSave").textContent=state.saved.has(state.selected)?"♥":"♡"});
-document.querySelector("#startRoute").addEventListener("click",()=>{const trail=trails.find(t=>t.id===state.selected);if(trail?.source)window.open(trail.source,"_blank","noopener");else showToast("No verified trail source is available yet")});
+document.querySelector("#startRoute").addEventListener("click",()=>{const trail=trails.find(t=>t.id===state.selected),points=trailPoints(trail);closeDetail();document.querySelector("#explorer").scrollIntoView();if(points.length>1)map.fitBounds(L.latLngBounds(points).pad(.16),{animate:true,maxZoom:14});else map.flyTo(trail.center,11);showToast(points.length>1?"Showing the full mapped trail":"Showing the trail area")});
 document.querySelector("#filterBtn").addEventListener("click",()=>{state.activeTypes=new Set(allTypes);render(true);showToast("All three trail layers are visible")});
 document.querySelector("#sortBtn").addEventListener("click",e=>{const options=["Nearby","Distance","Difficulty"];state.sort=options[(options.indexOf(state.sort)+1)%options.length];e.currentTarget.firstChild.textContent=state.sort+" ";render(false)});
 document.querySelector("#zoomIn").addEventListener("click",e=>{e.stopPropagation();map.zoomIn()});document.querySelector("#zoomOut").addEventListener("click",e=>{e.stopPropagation();map.zoomOut()});
