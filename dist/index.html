@@ -59,18 +59,27 @@
           </div>
 
           <div class="map" id="trailMap" aria-label="Interactive map of Newfoundland trails">
+            <div class="basemap-switcher" aria-label="Choose map view">
+              <button class="active" data-basemap="street" aria-pressed="true">Map</button>
+              <button data-basemap="satellite" aria-pressed="false">Satellite</button>
+              <button data-basemap="nlsf" aria-pressed="false">NLSF Live</button>
+            </div>
+            <div class="nlsf-live" id="nlsfLive" hidden>
+              <iframe title="Official NLSF live snowmobile trail map" loading="lazy"></iframe>
+              <a href="https://nlsf.evtrails.com/" target="_blank" rel="noopener">Open full NLSF map ↗</a>
+            </div>
             <div class="map-controls">
               <button id="zoomIn" aria-label="Zoom in">+</button><button id="zoomOut" aria-label="Zoom out">−</button>
               <button id="locateMe" aria-label="Find my location">⌖</button>
             </div>
             <div class="map-legend"><span><i class="walk-dot"></i> Walking</span><span><i class="ski-dot"></i> Skidoo</span><span><i class="atv-dot"></i> ATV</span><span><i class="shared-dot"></i> Multi-use</span></div>
-            <span class="demo-badge">REAL MAP · DEMO ROUTES</span>
+            <span class="demo-badge">OFFICIAL SOURCES · UNVERIFIED LINES HIDDEN</span>
           </div>
         </div>
 
         <aside class="trail-drawer" id="trailDrawer">
           <div class="drawer-head">
-            <div><span class="result-count" id="resultCount">6 routes</span><h2>Trails near you</h2></div>
+            <div><span class="result-count" id="resultCount">80 routes</span><h2>Trails near you</h2></div>
             <button id="sortBtn" class="sort-btn">Nearby <span>⌄</span></button>
           </div>
           <div class="trail-list" id="trailList"></div>
@@ -99,7 +108,7 @@
         <div class="detail-stats"><div><small>Distance</small><b id="detailDistance"></b></div><div><small>Difficulty</small><b id="detailDifficulty"></b></div><div><small>Est. time</small><b id="detailTime"></b></div></div>
         <div class="condition-row"><span class="condition-good">●</span><div><b id="detailCondition"></b><small>Confirm current access and conditions before travel</small></div></div>
         <a class="source-link" id="detailSource" href="#" target="_blank" rel="noopener">View official trail source <span>↗</span></a>
-        <button class="primary-action" id="startRoute">Start route <span>→</span></button>
+        <button class="primary-action" id="startRoute">Open trail source <span>↗</span></button>
       </div>
     </article>
   </div>
@@ -108,6 +117,8 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="trailway-data.js"></script>
   <script src="trails-data.js"></script>
+  <script src="gnta-data.js"></script>
+  <script src="north-data.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
