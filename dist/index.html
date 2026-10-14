@@ -68,6 +68,7 @@
               <input id="searchInput" type="search" placeholder="Search trails or regions" aria-label="Search trails or regions" />
             </label>
             <button class="filter-btn" id="filterBtn"><span>☷</span> Filters <b id="filterCount">0</b></button>
+            <button class="track-btn" id="recordRoute"><span>●</span> Record trip</button>
           </div>
 
           <div class="map" id="trailMap" aria-label="Interactive map of Newfoundland trails">
@@ -76,16 +77,21 @@
               <button data-basemap="satellite" aria-pressed="false">Satellite</button>
             </div>
             <div class="poi-switcher" aria-label="Toggle map points">
-              <button class="active" data-poi="shelter" aria-pressed="true"><span>⌂</span> Trail shacks</button>
+              <button class="active" data-poi="shelter" aria-pressed="true"><span>⌂</span> Warm-up shacks</button>
               <button data-poi="service" aria-pressed="false"><span>＋</span> POIs</button>
             </div>
             <button class="clear-focus" id="clearFocus" hidden>← All trail starts</button>
+            <section class="trip-panel" id="tripPanel" hidden aria-live="polite">
+              <div><span class="recording-dot"></span><small>LIVE GPS TRACK</small><b id="tripTime">00:00</b></div>
+              <div><small>DISTANCE</small><b id="tripDistance">0.00 km</b></div>
+              <button id="stopRoute">Finish &amp; save</button>
+            </section>
             <div class="map-controls">
               <button id="zoomIn" aria-label="Zoom in">+</button><button id="zoomOut" aria-label="Zoom out">−</button>
               <button id="locateMe" aria-label="Find my location">⌖</button>
             </div>
             <div class="map-legend" id="mapLegend"><span><i class="walk-dot"></i> Walking</span><span><i class="ski-dot"></i> Skidoo</span><span><i class="atv-dot"></i> ATV</span><span><i class="shared-dot"></i> Multi-use</span></div>
-            <span class="demo-badge">STATIC DATA · 1,400+ MAPPED SEGMENTS</span>
+            <span class="demo-badge">OFFICIAL + COMMUNITY DATA · VERIFY ACCESS</span>
           </div>
         </div>
 
@@ -119,12 +125,29 @@
         <p class="eyebrow" id="detailRegion"></p><h2 id="modalTitle"></h2>
         <div class="detail-rating" id="detailRating" hidden></div>
         <div class="detail-stats"><div><small>Distance</small><b id="detailDistance"></b></div><div><small>Difficulty</small><b id="detailDifficulty"></b></div><div><small>Est. time</small><b id="detailTime"></b></div><div><small>Elevation</small><b id="detailElevation"></b></div></div>
-        <div class="detail-tabs" role="tablist"><button class="active" data-detail-tab="overview">Overview</button><button data-detail-tab="plan">Plan</button><button data-detail-tab="nearby">Nearby POIs <b id="nearbyCount">0</b></button></div>
+        <div class="detail-tabs" role="tablist"><button class="active" data-detail-tab="overview">Overview</button><button data-detail-tab="plan">Plan</button><button data-detail-tab="nearby">Nearby POIs <b id="nearbyCount">0</b></button><button data-detail-tab="community">Community <b id="reviewCount">0</b></button></div>
         <section class="detail-panel active" data-detail-panel="overview"><p id="detailDescription"></p><div class="feature-chips" id="detailFeatures"></div></section>
         <section class="detail-panel" data-detail-panel="plan"><dl class="route-facts"><div><dt>Route type</dt><dd id="detailRouteType"></dd></div><div><dt>Map status</dt><dd id="detailMapStatus"></dd></div><div><dt>Trail use</dt><dd id="detailUse"></dd></div><div><dt>Access</dt><dd id="detailAccess"></dd></div></dl><div class="detail-links" id="detailLinks"></div></section>
         <section class="detail-panel" data-detail-panel="nearby"><div class="nearby-list" id="nearbyList"></div></section>
+        <section class="detail-panel community-panel" data-detail-panel="community">
+          <div class="community-head"><div><small>LOCAL TRAIL NOTES</small><h3>Share what you found</h3></div><button id="suggestFix">Suggest map fix</button></div>
+          <div class="review-list" id="reviewList"></div>
+          <form class="review-form" id="reviewForm">
+            <label><span>Your rating</span><select id="reviewRating" required><option value="">Choose</option><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select></label>
+            <label class="review-note"><span>Trail review</span><textarea id="reviewText" rows="3" maxlength="600" placeholder="Conditions, highlights, access, or advice…" required></textarea></label>
+            <label class="photo-input"><span>Add a photo</span><input id="reviewPhoto" type="file" accept="image/*" /></label>
+            <button type="submit">Post review</button>
+          </form>
+          <form class="fix-form" id="fixForm" hidden>
+            <div><b>Suggest a trail-map correction</b><button type="button" id="closeFix" aria-label="Close suggestion form">×</button></div>
+            <select id="fixType" required><option value="">What needs fixing?</option><option>Route line is wrong</option><option>Trail use is wrong</option><option>Access or closure</option><option>Missing trail or POI</option></select>
+            <textarea id="fixText" rows="3" maxlength="700" placeholder="Tell moderators exactly what should change…" required></textarea>
+            <button type="submit">Send for moderation</button>
+          </form>
+          <p class="moderation-note">New reviews and edits are marked community-submitted with a timestamp. They remain pending until reviewed by a moderator.</p>
+        </section>
         <div class="condition-row"><span class="condition-good">●</span><div><b id="detailCondition"></b><small>Confirm current access and conditions before travel</small></div></div>
-        <div class="detail-actions"><button class="primary-action" id="startRoute">Show trail on map <span>⌖</span></button><a class="secondary-action" id="trailDirections" target="_blank" rel="noopener">Directions</a></div>
+        <div class="detail-actions"><button class="primary-action" id="startRoute">Show trail on map <span>⌖</span></button><button class="secondary-action" id="startPreview">Preview with live GPS</button><a class="secondary-action" id="trailDirections" target="_blank" rel="noopener">Directions</a></div>
       </div>
     </article>
   </div>
@@ -136,6 +159,7 @@
   <script src="gnta-data.js"></script>
   <script src="north-data.js"></script>
   <script src="mapped-data.js"></script>
+  <script src="community-atv-data.js"></script>
   <script src="enriched-data.js"></script>
   <script src="app.js"></script>
 </body>
