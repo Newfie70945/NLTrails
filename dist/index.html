@@ -5,20 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#13291f" />
   <meta name="description" content="Explore walking, skidoo, and ATV trails across Newfoundland." />
-  <title>Akidoo Trails — Newfoundland</title>
+  <title>Newfoundland Trails — Walking, Skidoo &amp; ATV</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <a href="#" class="brand" aria-label="Akidoo Trails home">
+      <a href="#" class="brand" aria-label="Newfoundland Trails home">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 44 44"><path d="M4 34 15 14l7 10 5-8 13 18H4Z"/><path d="m10 34 7-10 4 6 5-7 8 11"/></svg>
         </span>
-        <span><b>AKIDOO</b><small>TRAILS · NEWFOUNDLAND</small></span>
+        <span><b>NL TRAILS</b><small>WALK · SKIDOO · ATV</small></span>
       </a>
       <nav class="desktop-nav" aria-label="Main navigation">
         <button class="nav-link active" data-section="explore">Explore</button>
@@ -40,11 +41,11 @@
         <p class="intro">Walking paths, skidoo routes, and ATV trails across Newfoundland—mapped for the way you move.</p>
       </section>
 
-      <section class="mode-switcher" aria-label="Choose trail type">
-        <button class="mode active" data-mode="all"><span class="mode-icon">✦</span><span><b>All trails</b><small>Explore everything</small></span></button>
-        <button class="mode" data-mode="walking"><span class="mode-icon walking">⌁</span><span><b>Walking</b><small>Boots on the ground</small></span></button>
-        <button class="mode" data-mode="skidoo"><span class="mode-icon skidoo">❄</span><span><b>Skidoo</b><small>Chase the snow</small></span></button>
-        <button class="mode" data-mode="atv"><span class="mode-icon atv">⬡</span><span><b>ATV</b><small>Take the rough road</small></span></button>
+      <section class="mode-switcher" aria-label="Toggle trail map layers">
+        <button class="mode active" data-mode="all" aria-pressed="true"><span class="mode-icon">✦</span><span><b>All layers</b><small>Show every trail type</small></span></button>
+        <button class="mode active" data-mode="walking" aria-pressed="true"><span class="mode-icon walking">⌁</span><span><b>Walking</b><small>Boots on the ground</small></span></button>
+        <button class="mode active" data-mode="skidoo" aria-pressed="true"><span class="mode-icon skidoo">❄</span><span><b>Skidoo</b><small>Chase the snow</small></span></button>
+        <button class="mode active" data-mode="atv" aria-pressed="true"><span class="mode-icon atv">⬡</span><span><b>ATV</b><small>Take the rough road</small></span></button>
       </section>
 
       <section class="explorer" id="explorer">
@@ -57,32 +58,13 @@
             <button class="filter-btn" id="filterBtn"><span>☷</span> Filters <b id="filterCount">0</b></button>
           </div>
 
-          <div class="map" id="trailMap" aria-label="Illustrated map of Newfoundland trails">
-            <svg class="terrain" viewBox="0 0 860 690" role="img" aria-label="Map of the island of Newfoundland">
-              <defs>
-                <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#8da497" stroke-opacity=".10"/></pattern>
-                <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#10241c" flood-opacity=".14"/></filter>
-              </defs>
-              <rect width="860" height="690" fill="url(#grid)"/>
-              <path class="island" filter="url(#shadow)" d="M154 101c45-22 103-33 155-18 27 8 45 28 65 47 19 18 50 21 71 5 25-19 40-58 75-61 27-3 50 20 52 46 2 24-16 40-19 62-2 22 14 43 36 48 30 7 69-9 89 20 19 27-1 58-18 79-24 28-29 55-16 90 13 33-4 74-35 91-27 14-58 4-84 20-29 18-36 55-65 73-35 21-75 5-110 19-35 13-58 54-95 58-29 3-61-20-57-51 4-29 40-40 46-69 5-29-21-49-30-74-10-29 0-61-8-90-9-31-46-47-55-78-10-34 13-72 50-78 24-4 54 12 73-7 22-22 6-53-17-69-31-22-81-23-96 18-11 30 7 59 0 87-7 28-42 47-68 34-32-16-43-60-14-87 12-11 29-14 45-22Z"/>
-              <g class="contours" fill="none">
-                <path d="M199 155c88-34 151-3 195 45s98 43 142 16"/>
-                <path d="M152 280c95-28 182 19 226 84s109 94 197 65"/>
-                <path d="M177 431c72-31 142-16 192 38s101 65 151 47"/>
-                <path d="M269 113c-16 80 28 123 70 157s60 102 40 167"/>
-              </g>
-              <g id="routeLines"></g>
-            </svg>
-            <div id="markers"></div>
-            <span class="map-label label-west">GROS MORNE</span>
-            <span class="map-label label-central">CENTRAL</span>
-            <span class="map-label label-east">AVALON</span>
+          <div class="map" id="trailMap" aria-label="Interactive map of Newfoundland trails">
             <div class="map-controls">
-              <button aria-label="Zoom in">+</button><button aria-label="Zoom out">−</button>
-              <button aria-label="Find my location">⌖</button>
+              <button id="zoomIn" aria-label="Zoom in">+</button><button id="zoomOut" aria-label="Zoom out">−</button>
+              <button id="locateMe" aria-label="Find my location">⌖</button>
             </div>
             <div class="map-legend"><span><i class="walk-dot"></i> Walking</span><span><i class="ski-dot"></i> Skidoo</span><span><i class="atv-dot"></i> ATV</span></div>
-            <span class="demo-badge">DEMO TRAIL DATA</span>
+            <span class="demo-badge">REAL MAP · DEMO ROUTES</span>
           </div>
         </div>
 
@@ -122,6 +104,7 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="app.js"></script>
 </body>
 </html>
