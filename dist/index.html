@@ -64,7 +64,7 @@
               <button data-basemap="satellite" aria-pressed="false">Satellite</button>
             </div>
             <div class="poi-switcher" aria-label="Toggle map points">
-              <button class="active" data-poi="shelter" aria-pressed="true"><span>⌂</span> Warm-up shacks</button>
+              <button class="active" data-poi="shelter" aria-pressed="true"><span>⌂</span> Trail shacks</button>
               <button data-poi="service" aria-pressed="false"><span>＋</span> POIs</button>
             </div>
             <button class="clear-focus" id="clearFocus" hidden>← All trail starts</button>
@@ -72,7 +72,7 @@
               <button id="zoomIn" aria-label="Zoom in">+</button><button id="zoomOut" aria-label="Zoom out">−</button>
               <button id="locateMe" aria-label="Find my location">⌖</button>
             </div>
-            <div class="map-legend"><span><i class="walk-dot"></i> Walking</span><span><i class="ski-dot"></i> Skidoo</span><span><i class="atv-dot"></i> ATV</span><span><i class="shared-dot"></i> Multi-use</span><span class="unmaintained-key">┄ Unmaintained</span></div>
+            <div class="map-legend" id="mapLegend"><span><i class="walk-dot"></i> Walking</span><span><i class="ski-dot"></i> Skidoo</span><span><i class="atv-dot"></i> ATV</span><span><i class="shared-dot"></i> Multi-use</span></div>
             <span class="demo-badge">STATIC DATA · 1,400+ MAPPED SEGMENTS</span>
           </div>
         </div>
@@ -94,7 +94,7 @@
     </main>
 
     <nav class="mobile-nav" aria-label="Mobile navigation">
-      <button class="active"><span>⌖</span>Explore</button><button><span>♡</span>Saved</button><button><span>✚</span>Safety</button>
+      <button class="active" data-section="explore"><span>⌖</span>Explore</button><button data-section="saved"><span>♡</span>Saved</button><button data-section="safety"><span>✚</span>Safety</button>
     </nav>
   </div>
 
