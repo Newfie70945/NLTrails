@@ -142,9 +142,9 @@
             <div><b>Suggest a trail-map correction</b><button type="button" id="closeFix" aria-label="Close suggestion form">×</button></div>
             <select id="fixType" required><option value="">What needs fixing?</option><option>Route line is wrong</option><option>Trail use is wrong</option><option>Access or closure</option><option>Missing trail or POI</option></select>
             <textarea id="fixText" rows="3" maxlength="700" placeholder="Tell moderators exactly what should change…" required></textarea>
-            <button type="submit">Send for moderation</button>
+            <button type="submit">Save moderation draft</button>
           </form>
-          <p class="moderation-note">New reviews and edits are marked community-submitted with a timestamp. They remain pending until reviewed by a moderator.</p>
+          <p class="moderation-note">Beta: reviews and edits are timestamped and saved on this device as moderation drafts. Account sync and the shared moderator queue are the next backend phase.</p>
         </section>
         <div class="condition-row"><span class="condition-good">●</span><div><b id="detailCondition"></b><small>Confirm current access and conditions before travel</small></div></div>
         <div class="detail-actions"><button class="primary-action" id="startRoute">Show trail on map <span>⌖</span></button><button class="secondary-action" id="startPreview">Preview with live GPS</button><a class="secondary-action" id="trailDirections" target="_blank" rel="noopener">Directions</a></div>
