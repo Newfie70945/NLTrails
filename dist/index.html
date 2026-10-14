@@ -63,7 +63,7 @@
               <button id="zoomIn" aria-label="Zoom in">+</button><button id="zoomOut" aria-label="Zoom out">−</button>
               <button id="locateMe" aria-label="Find my location">⌖</button>
             </div>
-            <div class="map-legend"><span><i class="walk-dot"></i> Walking</span><span><i class="ski-dot"></i> Skidoo</span><span><i class="atv-dot"></i> ATV</span></div>
+            <div class="map-legend"><span><i class="walk-dot"></i> Walking</span><span><i class="ski-dot"></i> Skidoo</span><span><i class="atv-dot"></i> ATV</span><span><i class="shared-dot"></i> Multi-use</span></div>
             <span class="demo-badge">REAL MAP · DEMO ROUTES</span>
           </div>
         </div>
@@ -97,7 +97,8 @@
       <div class="detail-content">
         <p class="eyebrow" id="detailRegion"></p><h2 id="modalTitle"></h2><p id="detailDescription"></p>
         <div class="detail-stats"><div><small>Distance</small><b id="detailDistance"></b></div><div><small>Difficulty</small><b id="detailDifficulty"></b></div><div><small>Est. time</small><b id="detailTime"></b></div></div>
-        <div class="condition-row"><span class="condition-good">●</span><div><b id="detailCondition"></b><small>Community condition update · demo</small></div></div>
+        <div class="condition-row"><span class="condition-good">●</span><div><b id="detailCondition"></b><small>Confirm current access and conditions before travel</small></div></div>
+        <a class="source-link" id="detailSource" href="#" target="_blank" rel="noopener">View official trail source <span>↗</span></a>
         <button class="primary-action" id="startRoute">Start route <span>→</span></button>
       </div>
     </article>
@@ -105,6 +106,8 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="trailway-data.js"></script>
+  <script src="trails-data.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
