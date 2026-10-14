@@ -1,4 +1,5 @@
 const trails=[...TRAILS,...GNTA_TRAILS,...NORTHERN_TRAILS,...OSM_ROUTE_TRAILS].map(trail=>{
+  if(trail.id===11350)return {...trail,region:"Route 430, south of St. Anthony · GNTA",center:[51.4389,-55.6429],precision:"trailhead",condition:"Verified trailhead area · route pending",description:"A short, unmaintained out-and-back to Triple Falls and a local swimming hole. The trailhead area is just north and opposite Triple Falls RV Park on Route 430. The pin marks the verified roadside access area; a route line will only be added once its geometry is verified."};
   const mapped=GNTA_MAPPED[trail.id];
   return mapped?{...trail,...mapped,precision:"mapped",condition:"Mapped trail line"}:trail;
 });
@@ -29,6 +30,7 @@ const nlsfUnmaintained=NLSF_SEGMENTS.filter(x=>x.c!=="F").map(x=>decodePolyline(
 
 function trailGeometry(trail){return trail.segments||trail.route||null}
 function trailPoints(trail){const geometry=trailGeometry(trail);return geometry?(trail.segments?geometry.flat():geometry):[trail.center]}
+function hasVerifiedMapLocation(trail){return ["official","mapped","trailhead"].includes(trail.precision)}
 
 function setBasemap(name){
   state.basemap=name;
@@ -72,7 +74,7 @@ function updateMap(items,fit=false){
   items.forEach(t=>{
     const geometry=trailGeometry(t);
     if(["official","mapped"].includes(t.precision)&&geometry?.length)L.polyline(geometry,{color:colors[t.type],weight:5,opacity:.92,lineCap:"round"}).on("click",()=>selectTrail(t.id,true)).addTo(trailLayer);
-    L.marker(t.center,{icon:pinIcon(t,state.selected===t.id),title:t.name,alt:`Open ${t.name}`}).bindTooltip(t.name,{direction:"right",className:"akidoo-tooltip",offset:[8,-15]}).on("click",()=>selectTrail(t.id,true)).addTo(trailLayer);
+    if(hasVerifiedMapLocation(t))L.marker(t.center,{icon:pinIcon(t,state.selected===t.id),title:t.name,alt:`Open ${t.name}`}).bindTooltip(t.name,{direction:"right",className:"akidoo-tooltip",offset:[8,-15]}).on("click",()=>selectTrail(t.id,true)).addTo(trailLayer);
   });
   if(fit&&items.length){const points=items.flatMap(trailPoints);map.fitBounds(L.latLngBounds(points).pad(.18),{animate:true,maxZoom:9});}
 }
@@ -83,7 +85,7 @@ function render(fitMap=false){
   updateLayerButtons();updateMap(items,fitMap);
 }
 
-function selectTrail(id,open=false){const t=trails.find(x=>x.id===id);state.selected=id;render(false);map.flyTo(t.center,Math.max(map.getZoom(),8),{duration:.65});if(open)openDetail(id)}
+function selectTrail(id,open=false){const t=trails.find(x=>x.id===id);state.selected=id;render(false);if(hasVerifiedMapLocation(t))map.flyTo(t.center,Math.max(map.getZoom(),t.precision==="trailhead"?13:8),{duration:.65});if(open)openDetail(id)}
 function toggleSave(id){state.saved.has(id)?state.saved.delete(id):state.saved.add(id);localStorage.setItem("nl-trails-saved",JSON.stringify([...state.saved]));render(false);showToast(state.saved.has(id)?"Trail saved for later":"Removed from saved trails")}
 function openDetail(id){const t=trails.find(x=>x.id===id);state.selected=id;document.querySelector("#detailVisual").className=`detail-visual ${t.type}`;document.querySelector("#detailType").textContent=t.badge||(t.type==="multiuse"?"MULTI-USE":t.type.toUpperCase());document.querySelector("#detailRegion").textContent=t.region;document.querySelector("#modalTitle").textContent=t.name;document.querySelector("#detailDescription").textContent=t.description;document.querySelector("#detailDistance").textContent=t.distance;document.querySelector("#detailDifficulty").textContent=t.difficulty;document.querySelector("#detailTime").textContent=t.time;document.querySelector("#detailCondition").textContent=t.condition;document.querySelector("#modalSave").textContent=state.saved.has(id)?"♥":"♡";modal.hidden=false;document.body.style.overflow="hidden";document.querySelector(".close-btn").focus()}
 function closeDetail(){modal.hidden=true;document.body.style.overflow=""}
@@ -96,7 +98,7 @@ list.addEventListener("click",e=>{const save=e.target.closest("[data-save]");if(
 list.addEventListener("keydown",e=>{if(e.key==="Enter"){const card=e.target.closest("[data-id]");if(card)selectTrail(Number(card.dataset.id),true)}});
 document.querySelectorAll("[data-close]").forEach(x=>x.addEventListener("click",closeDetail));document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!modal.hidden)closeDetail()});
 document.querySelector("#modalSave").addEventListener("click",()=>{toggleSave(state.selected);document.querySelector("#modalSave").textContent=state.saved.has(state.selected)?"♥":"♡"});
-document.querySelector("#startRoute").addEventListener("click",()=>{const trail=trails.find(t=>t.id===state.selected),points=trailPoints(trail);closeDetail();document.querySelector("#explorer").scrollIntoView();if(points.length>1)map.fitBounds(L.latLngBounds(points).pad(.16),{animate:true,maxZoom:14});else map.flyTo(trail.center,11);showToast(points.length>1?"Showing the full mapped trail":"Showing the trail area")});
+document.querySelector("#startRoute").addEventListener("click",()=>{const trail=trails.find(t=>t.id===state.selected),points=trailPoints(trail);closeDetail();document.querySelector("#explorer").scrollIntoView();if(points.length>1)map.fitBounds(L.latLngBounds(points).pad(.16),{animate:true,maxZoom:14});else if(hasVerifiedMapLocation(trail))map.flyTo(trail.center,trail.precision==="trailhead"?14:11);showToast(points.length>1?"Showing the full mapped trail":trail.precision==="trailhead"?"Showing the verified trailhead · route line pending":"Route location is awaiting verification")});
 document.querySelector("#filterBtn").addEventListener("click",()=>{state.activeTypes=new Set(allTypes);render(true);showToast("All three trail layers are visible")});
 document.querySelector("#sortBtn").addEventListener("click",e=>{const options=["Nearby","Distance","Difficulty"];state.sort=options[(options.indexOf(state.sort)+1)%options.length];e.currentTarget.firstChild.textContent=state.sort+" ";render(false)});
 document.querySelector("#zoomIn").addEventListener("click",e=>{e.stopPropagation();map.zoomIn()});document.querySelector("#zoomOut").addEventListener("click",e=>{e.stopPropagation();map.zoomOut()});
