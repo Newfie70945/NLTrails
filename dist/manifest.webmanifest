@@ -4,6 +4,8 @@
   "description":"A map-first guide to walking, skidoo, ATV and road-trip routes across Newfoundland and Labrador.",
   "start_url":"./",
   "display":"standalone",
+  "orientation":"portrait-primary",
+  "categories":["navigation","travel"],
   "background_color":"#f4f1e7",
   "theme_color":"#13291f"
 }

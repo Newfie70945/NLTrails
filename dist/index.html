@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#13291f" />
   <meta name="description" content="Explore walking, skidoo, ATV, and road-trip destinations across Newfoundland." />
   <link rel="manifest" href="manifest.webmanifest" />
@@ -73,6 +73,7 @@
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
               <input id="searchInput" type="search" placeholder="Search trails, destinations, or regions" aria-label="Search trails, destinations, or regions" />
             </label>
+            <div class="mobile-view-toggle" aria-label="Choose map or list view"><button class="active" data-mobile-view="map" aria-pressed="true">Map</button><button data-mobile-view="list" aria-pressed="false">List</button></div>
             <button class="filter-btn" id="filterBtn"><span>☷</span> Filters <b id="filterCount">0</b></button>
             <button class="track-btn" id="recordRoute"><span>●</span> Record trip</button>
           </div>
@@ -81,6 +82,7 @@
             <label>Difficulty<select id="difficultyFilter"><option value="All">Any difficulty</option><option>Easy</option><option>Moderate</option><option>Difficult</option></select></label>
             <label>Maximum distance<select id="distanceFilter"><option value="All">Any distance</option><option value="5">Up to 5 km</option><option value="15">Up to 15 km</option><option value="50">Up to 50 km</option></select></label>
             <label class="check-filter"><input type="checkbox" id="verifiedOnly" /> Official or mapped only</label>
+            <fieldset class="poi-category-filters"><legend>Nearby places</legend><button class="active" data-poi-category="Parking">Parking</button><button class="active" data-poi-category="Toilets">Toilets</button><button class="active" data-poi-category="DrinkingWater">Water</button><button class="active" data-poi-category="Campground">Camping</button><button class="active" data-poi-category="Shelter">Shelters</button><button class="active" data-poi-category="Lookout">Views</button><button class="active" data-poi-category="Emergency">Emergency</button></fieldset>
             <button id="clearFilters">Clear filters</button>
           </section>
 
@@ -110,6 +112,7 @@
 
         <aside class="trail-drawer" id="trailDrawer">
           <div class="drawer-head">
+            <span class="sheet-handle" aria-hidden="true"></span>
             <div><span class="result-count" id="resultCount">102 routes</span><h2>Trails near you</h2></div>
             <button id="sortBtn" class="sort-btn">Nearby <span>⌄</span></button>
           </div>
@@ -175,6 +178,7 @@
   <script src="north-data.js"></script>
   <script src="mapped-data.js"></script>
   <script src="community-atv-data.js"></script>
+  <script src="osm-poi-data.js"></script>
   <script src="flowers-cove-data.js"></script>
   <script src="expanded-walking-data.js"></script>
   <script src="provincial-parks-data.js"></script>
