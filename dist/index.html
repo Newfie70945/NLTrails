@@ -4,12 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#13291f" />
-  <meta name="description" content="Explore walking, skidoo, and ATV trails across Newfoundland." />
-  <title>Newfoundland Trails — Walking, Skidoo &amp; ATV</title>
+  <meta name="description" content="Explore walking, skidoo, ATV, and road-trip destinations across Newfoundland." />
+  <title>Newfoundland Trails — Hike, Ride &amp; Road Trip</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -19,7 +21,7 @@
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 44 44"><path d="M4 34 15 14l7 10 5-8 13 18H4Z"/><path d="m10 34 7-10 4 6 5-7 8 11"/></svg>
         </span>
-        <span><b>NL TRAILS</b><small>WALK · SKIDOO · ATV</small></span>
+        <span><b>NL TRAILS</b><small>WALK · RIDE · DRIVE</small></span>
       </a>
       <nav class="desktop-nav" aria-label="Main navigation">
         <button class="nav-link active" data-section="explore">Explore</button>
@@ -34,10 +36,12 @@
 
     <section class="home-page" id="homePage">
       <div class="home-hero">
-        <div class="home-copy"><p class="eyebrow">EXPLORE NEWFOUNDLAND YOUR WAY</p><h1>One island.<br><em>Two ways into the wild.</em></h1><p>Choose a focused map for hiking or for ATV and skidoo travel. Shared-use trails appear in both, with access details kept clear.</p></div>
+        <div class="home-copy"><p class="eyebrow">EXPLORE NEWFOUNDLAND YOUR WAY</p><h1>One island.<br><em>Four ways to explore.</em></h1><p>Choose a focused map for hiking, ATV riding, snowmobiling, or a Newfoundland road trip. Each view keeps the information relevant to that experience.</p></div>
         <div class="experience-grid">
           <button class="experience-card hiking-card" data-experience="walking"><span class="experience-icon">⌁</span><small>ON FOOT</small><h2>Hiking trails</h2><p>Mapped walks, elevation, difficulty, trailheads, and nearby points of interest.</p><b>Open hiking map <span>→</span></b></button>
-          <button class="experience-card offroad-card" data-experience="offroad"><span class="experience-icon">❄</span><small>ATV + SKIDOO</small><h2>Off-road &amp; snow</h2><p>ATV routes, snowmobile networks, warm-up shacks, crossings, and services.</p><b>Open off-road map <span>→</span></b></button>
+          <button class="experience-card atv-card" data-experience="atv"><span class="experience-icon">⬡</span><small>OFF-ROAD</small><h2>ATV routes</h2><p>Community routes, crossings, fuel, access notes, and shared corridors.</p><b>Open ATV map <span>→</span></b></button>
+          <button class="experience-card snow-card" data-experience="skidoo"><span class="experience-icon">❄</span><small>WINTER</small><h2>Snowmobile trails</h2><p>Groomed and unmaintained networks, warm-up shacks, and winter services.</p><b>Open snow map <span>→</span></b></button>
+          <button class="experience-card driving-card" data-experience="driving"><span class="experience-icon">◆</span><small>ROAD TRIPS</small><h2>Drive Newfoundland</h2><p>Viewpoints, museums, historic sites, lighthouses, attractions, and visitor stops.</p><b>Open driving map <span>→</span></b></button>
         </div>
         <button class="all-trails-link" data-experience="all">Explore every trail together <span>→</span></button>
       </div>
@@ -58,6 +62,7 @@
         <button class="mode active" data-mode="walking" aria-pressed="true"><span class="mode-icon walking">⌁</span><span><b>Walking</b><small>Boots on the ground</small></span></button>
         <button class="mode active" data-mode="skidoo" aria-pressed="true"><span class="mode-icon skidoo">❄</span><span><b>Skidoo</b><small>Groomed + unmaintained</small></span></button>
         <button class="mode active" data-mode="atv" aria-pressed="true"><span class="mode-icon atv">⬡</span><span><b>ATV</b><small>Take the rough road</small></span></button>
+        <button class="mode active" data-mode="driving" aria-pressed="true"><span class="mode-icon driving">◆</span><span><b>Driving</b><small>Tourist destinations</small></span></button>
       </section>
 
       <section class="explorer" id="explorer">
@@ -65,7 +70,7 @@
           <div class="map-toolbar">
             <label class="search-box">
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
-              <input id="searchInput" type="search" placeholder="Search trails or regions" aria-label="Search trails or regions" />
+              <input id="searchInput" type="search" placeholder="Search trails, destinations, or regions" aria-label="Search trails, destinations, or regions" />
             </label>
             <button class="filter-btn" id="filterBtn"><span>☷</span> Filters <b id="filterCount">0</b></button>
             <button class="track-btn" id="recordRoute"><span>●</span> Record trip</button>
@@ -154,6 +159,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <script src="trailway-data.js"></script>
   <script src="trails-data.js"></script>
   <script src="gnta-data.js"></script>
@@ -162,6 +168,7 @@
   <script src="community-atv-data.js"></script>
   <script src="flowers-cove-data.js"></script>
   <script src="expanded-walking-data.js"></script>
+  <script src="driving-data.js"></script>
   <script src="enriched-data.js"></script>
   <script src="app.js"></script>
 </body>
