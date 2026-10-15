@@ -1,0 +1,9 @@
+{
+  "name":"Newfoundland Trails",
+  "short_name":"NL Trails",
+  "description":"A map-first guide to walking, skidoo, ATV and road-trip routes across Newfoundland and Labrador.",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#f4f1e7",
+  "theme_color":"#13291f"
+}

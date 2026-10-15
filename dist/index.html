@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#13291f" />
   <meta name="description" content="Explore walking, skidoo, ATV, and road-trip destinations across Newfoundland." />
+  <link rel="manifest" href="manifest.webmanifest" />
   <title>Newfoundland Trails — Hike, Ride &amp; Road Trip</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -29,14 +30,14 @@
         <button class="nav-link" data-section="safety">Trail safety</button>
       </nav>
       <div class="header-actions">
-        <span class="weather"><span>☁</span><b>4°</b><small>West Coast</small></span>
+        <a class="weather" href="https://weather.gc.ca/forecast/canada/index_e.html?id=NL" target="_blank" rel="noopener" aria-label="Check Newfoundland weather forecast"><span>☁</span><b>Forecast</b><small>Environment Canada</small></a>
         <button class="round-btn" id="profileBtn" aria-label="Open profile">AT</button>
       </div>
     </header>
 
     <section class="home-page" id="homePage">
       <div class="home-hero">
-        <div class="home-copy"><p class="eyebrow">EXPLORE NEWFOUNDLAND YOUR WAY</p><h1>One island.<br><em>Four ways to explore.</em></h1><p>Choose a focused map for hiking, ATV riding, snowmobiling, or a Newfoundland road trip. Each view keeps the information relevant to that experience.</p></div>
+        <div class="home-copy"><p class="eyebrow">EXPLORE NEWFOUNDLAND YOUR WAY</p><h1>One island.<br><em>Four ways to explore.</em></h1><div><p>Choose a focused map for hiking, ATV riding, snowmobiling, or a Newfoundland road trip. Each view keeps the information relevant to that experience.</p><button class="near-me-cta" id="homeNearMe">⌖ Find trails near me</button></div></div>
         <div class="experience-grid">
           <button class="experience-card hiking-card" data-experience="walking"><span class="experience-icon">⌁</span><small>ON FOOT</small><h2>Hiking trails</h2><p>Mapped walks, elevation, difficulty, trailheads, and nearby points of interest.</p><b>Open hiking map <span>→</span></b></button>
           <button class="experience-card atv-card" data-experience="atv"><span class="experience-icon">⬡</span><small>OFF-ROAD</small><h2>ATV routes</h2><p>Community routes, crossings, fuel, access notes, and shared corridors.</p><b>Open ATV map <span>→</span></b></button>
@@ -76,6 +77,12 @@
             <button class="track-btn" id="recordRoute"><span>●</span> Record trip</button>
           </div>
           <div class="category-filter" id="categoryFilter" hidden aria-label="Map category filters"></div>
+          <section class="advanced-filters" id="advancedFilters" hidden aria-label="Trail filters">
+            <label>Difficulty<select id="difficultyFilter"><option value="All">Any difficulty</option><option>Easy</option><option>Moderate</option><option>Difficult</option></select></label>
+            <label>Maximum distance<select id="distanceFilter"><option value="All">Any distance</option><option value="5">Up to 5 km</option><option value="15">Up to 15 km</option><option value="50">Up to 50 km</option></select></label>
+            <label class="check-filter"><input type="checkbox" id="verifiedOnly" /> Official or mapped only</label>
+            <button id="clearFilters">Clear filters</button>
+          </section>
 
           <div class="map" id="trailMap" aria-label="Interactive map of Newfoundland trails">
             <div class="basemap-switcher" aria-label="Choose map view">
@@ -112,7 +119,7 @@
 
       <section class="safety-strip" id="safety">
         <div><span class="safety-icon">✚</span><div><p class="eyebrow">BEFORE YOU HEAD OUT</p><h2>Wild places demand good plans.</h2></div></div>
-        <div class="safety-tips"><span>Check conditions</span><span>Tell someone your route</span><span>Pack for weather</span></div>
+        <div class="safety-tips"><span>Check conditions</span><span>Tell someone your route</span><span>Pack for weather</span><span>No service? Carry a satellite device</span></div>
         <button id="safetyBtn">Read trail safety <span>→</span></button>
       </section>
     </main>
@@ -153,7 +160,8 @@
           <p class="moderation-note">Beta: reviews and edits are timestamped and saved on this device as moderation drafts. Account sync and the shared moderator queue are the next backend phase.</p>
         </section>
         <div class="condition-row"><span class="condition-good">●</span><div><b id="detailCondition"></b><small>Confirm current access and conditions before travel</small></div></div>
-        <div class="detail-actions"><button class="primary-action" id="startRoute">Show trail on map <span>⌖</span></button><button class="secondary-action" id="startPreview">Preview with live GPS</button><a class="secondary-action" id="trailDirections" target="_blank" rel="noopener">Directions</a></div>
+        <p class="verified-note" id="verifiedNote"></p>
+        <div class="detail-actions"><button class="primary-action" id="startRoute">Show trail on map <span>⌖</span></button><button class="secondary-action" id="downloadGpx">Download GPX</button><button class="secondary-action" id="startPreview">Preview with live GPS</button><a class="secondary-action" id="trailDirections" target="_blank" rel="noopener">Directions</a></div>
       </div>
     </article>
   </div>
@@ -169,6 +177,7 @@
   <script src="community-atv-data.js"></script>
   <script src="flowers-cove-data.js"></script>
   <script src="expanded-walking-data.js"></script>
+  <script src="provincial-parks-data.js"></script>
   <script src="driving-data.js"></script>
   <script src="activity-data.js"></script>
   <script src="enriched-data.js"></script>
