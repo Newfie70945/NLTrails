@@ -80,3 +80,17 @@ button:focus-visible,a:focus-visible,.trail-card:focus-visible,input:focus-visib
   .modal{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}.detail-sheet{max-height:calc(100dvh - env(safe-area-inset-top));border-radius:24px 24px 0 0}.detail-actions button,.detail-actions a{min-height:48px}.close-btn{width:44px;height:44px}
 }
 @media(max-width:560px){.mobile-view-toggle button{min-width:43px}.search-box input::placeholder{color:transparent}.poi-switcher{top:56px}.map-legend{bottom:224px}.map-legend span:nth-child(n+3){display:none}.advanced-filters label{flex-basis:100%}}
+
+/* Keep the map dominant on phones; switch to List for full cards. */
+@media(max-width:560px){
+  body:not(.mobile-list-view) .trail-drawer{height:132px;padding-top:9px}
+  body:not(.mobile-list-view) .drawer-head{padding:7px 16px 6px}
+  body:not(.mobile-list-view) .drawer-head h2{font-size:16px}
+  body:not(.mobile-list-view) .sort-btn{min-height:34px;height:34px}
+  body:not(.mobile-list-view) .trail-list{height:72px;padding:0 10px 8px 16px}
+  body:not(.mobile-list-view) .trail-card{height:64px;min-width:min(78vw,310px);padding:10px 12px}
+  body:not(.mobile-list-view) .trail-card .card-top{margin-bottom:4px}
+  body:not(.mobile-list-view) .trail-card .region,body:not(.mobile-list-view) .trail-card .card-stats{display:none}
+  body:not(.mobile-list-view) .trail-card h3{font-size:14px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  body:not(.mobile-list-view) .map-legend{bottom:144px}
+}
