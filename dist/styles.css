@@ -79,6 +79,25 @@ button:focus-visible,a:focus-visible,.trail-card:focus-visible,input:focus-visib
   .mobile-nav{height:calc(64px + env(safe-area-inset-bottom));z-index:2100;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -8px 30px rgba(18,40,31,.1)}.mobile-nav button{min-width:72px;min-height:56px}.toast{bottom:calc(78px + env(safe-area-inset-bottom));max-width:calc(100% - 32px);text-align:center}.safety-strip{margin-bottom:calc(64px + env(safe-area-inset-bottom))}
   .modal{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}.detail-sheet{max-height:calc(100dvh - env(safe-area-inset-top));border-radius:24px 24px 0 0}.detail-actions button,.detail-actions a{min-height:48px}.close-btn{width:44px;height:44px}
 }
+
+/* Visual refresh: a warmer, map-led Newfoundland field guide. */
+body{background:radial-gradient(circle at 9% 8%,rgba(118,137,53,.08),transparent 25rem),radial-gradient(circle at 92% 18%,rgba(75,142,170,.09),transparent 30rem),var(--cream)}
+.topbar{border-color:rgba(20,40,31,.1);box-shadow:0 1px 0 rgba(255,255,255,.7);background:rgba(246,244,236,.88)}
+.brand-mark{box-shadow:0 8px 22px rgba(20,58,45,.2),inset 0 0 0 1px rgba(255,255,255,.12)}
+.round-btn{box-shadow:0 7px 18px rgba(240,108,50,.25)}
+.hero-copy{position:relative}.hero-copy:after{content:"";position:absolute;right:5vw;bottom:9px;width:min(28vw,360px);height:1px;background:linear-gradient(90deg,transparent,rgba(20,58,45,.22),transparent)}
+.mode{background:rgba(255,255,255,.38);border-color:rgba(20,58,45,.15)}.mode:not(.active):hover{background:rgba(255,255,255,.82);border-color:rgba(20,58,45,.28)}.mode.active{box-shadow:0 12px 28px rgba(20,58,45,.2)}
+.explorer{border-color:rgba(20,58,45,.13);box-shadow:0 28px 80px rgba(18,40,31,.13),0 1px 0 rgba(255,255,255,.8) inset}
+.map-panel{background:linear-gradient(145deg,#f9f8f2,#efeee5)}.map-toolbar>*{box-shadow:0 7px 18px rgba(18,40,31,.07)}
+.map{border:1px solid rgba(20,58,45,.1);box-shadow:0 18px 42px rgba(18,40,31,.13),inset 0 0 0 1px rgba(255,255,255,.5)}
+.basemap-switcher,.poi-switcher{box-shadow:0 9px 24px rgba(18,40,31,.14)}.leaflet-bar a{color:var(--forest)!important;border-color:rgba(20,58,45,.1)!important}.leaflet-popup-content-wrapper{border-radius:14px!important;box-shadow:0 18px 42px rgba(18,40,31,.2)!important}.map-legend{border:1px solid rgba(20,58,45,.1);box-shadow:0 8px 22px rgba(18,40,31,.12)}
+.trail-drawer{background:linear-gradient(180deg,#fbfaf5 0%,#f3f2eb 100%)}.drawer-head{border-bottom:1px solid rgba(20,58,45,.08);margin-bottom:14px}
+.trail-card{overflow:hidden;border-color:rgba(20,58,45,.13);box-shadow:0 7px 20px rgba(18,40,31,.045)}.trail-card:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--orange);opacity:.7}.trail-card:has(.trail-type.skidoo):before{background:#4b8eaa}.trail-card:has(.trail-type.atv):before{background:#788935}.trail-card:has(.trail-type.multiuse):before{background:#76518d}.trail-card:hover{border-color:rgba(20,58,45,.28);box-shadow:0 14px 32px rgba(18,40,31,.1)}.trail-card.active{background:linear-gradient(100deg,rgba(240,108,50,.055),#fff 38%);border-left-width:1px}.trail-card h3{letter-spacing:-.018em}.condition{padding:3px 7px;border-radius:999px;background:#edf4ec}
+.home-page{background:radial-gradient(circle at 0 0,rgba(75,142,170,.12),transparent 28rem),radial-gradient(circle at 100% 48%,rgba(118,137,53,.1),transparent 32rem)}
+.experience-card{isolation:isolate;overflow:hidden;box-shadow:0 18px 38px rgba(18,40,31,.13);border-color:rgba(255,255,255,.2)}.experience-card:after{content:"";position:absolute;z-index:-1;width:220px;height:220px;right:-92px;bottom:-104px;border:1px solid rgba(255,255,255,.18);border-radius:50%;box-shadow:0 0 0 28px rgba(255,255,255,.035),0 0 0 58px rgba(255,255,255,.025)}.experience-card:hover{box-shadow:0 26px 54px rgba(18,40,31,.2)}.experience-icon{backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.16)}
+.safety-strip{box-shadow:0 -1px 0 rgba(255,255,255,.08) inset}
+@media(max-width:900px){.mode-switcher{box-shadow:0 8px 24px rgba(18,40,31,.09)}.explorer{box-shadow:none}.map-panel{background:linear-gradient(180deg,#f7f5ed,#edf0e8)}.trail-drawer{border-top-color:rgba(20,58,45,.12);box-shadow:0 -16px 42px rgba(18,40,31,.2)}.drawer-head{margin-bottom:0;border:0}}
+@media(max-width:560px){.topbar{background:rgba(246,244,236,.94)}.map{border-radius:18px 18px 0 0}body:not(.mobile-list-view) .trail-card{box-shadow:none;background:rgba(255,255,255,.72)}body:not(.mobile-list-view) .trail-card:before{width:3px}}
 @media(max-width:560px){.mobile-view-toggle button{min-width:43px}.search-box input::placeholder{color:transparent}.poi-switcher{top:56px}.map-legend{bottom:224px}.map-legend span:nth-child(n+3){display:none}.advanced-filters label{flex-basis:100%}}
 
 /* Keep the map dominant on phones; switch to List for full cards. */
