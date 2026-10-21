@@ -76,8 +76,13 @@
             <div class="mobile-view-toggle" aria-label="Choose map or list view"><button class="active" data-mobile-view="map" aria-pressed="true">Map</button><button data-mobile-view="list" aria-pressed="false">List</button></div>
             <button class="filter-btn" id="filterBtn"><span>☷</span> Filters <b id="filterCount">0</b></button>
             <button class="track-btn" id="recordRoute"><span>●</span> Record trip</button>
+            <span class="offline-status" id="offlineStatus" role="status">Offline ready</span>
           </div>
           <div class="category-filter" id="categoryFilter" hidden aria-label="Map category filters"></div>
+          <nav class="region-shortcuts" aria-label="Jump to a Newfoundland region">
+            <span>Jump to</span>
+            <button data-region="island">Island</button><button data-region="west">West coast</button><button data-region="north">Northern Peninsula</button><button data-region="central">Central</button><button data-region="east">East coast</button>
+          </nav>
           <section class="advanced-filters" id="advancedFilters" hidden aria-label="Trail filters">
             <label>Difficulty<select id="difficultyFilter"><option value="All">Any difficulty</option><option>Easy</option><option>Moderate</option><option>Difficult</option></select></label>
             <label>Maximum distance<select id="distanceFilter"><option value="All">Any distance</option><option value="5">Up to 5 km</option><option value="15">Up to 15 km</option><option value="50">Up to 50 km</option></select></label>
@@ -104,9 +109,11 @@
             <div class="map-controls">
               <button id="zoomIn" aria-label="Zoom in">+</button><button id="zoomOut" aria-label="Zoom out">−</button>
               <button id="locateMe" aria-label="Find my location">⌖</button>
+              <button id="resetMap" aria-label="Reset map view">↺</button>
               <button id="expandMap" aria-label="Expand map" aria-pressed="false">⛶</button>
             </div>
             <div class="map-legend" id="mapLegend"><span><i class="walk-dot"></i> Walking</span><span><i class="ski-dot"></i> Skidoo</span><span><i class="atv-dot"></i> ATV</span><span><i class="shared-dot"></i> Multi-use</span></div>
+            <button class="legend-toggle" id="legendToggle" aria-label="Expand map legend" aria-expanded="false">Key</button>
             <span class="demo-badge">OFFICIAL + COMMUNITY DATA · VERIFY ACCESS</span>
           </div>
         </div>

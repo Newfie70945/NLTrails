@@ -8,4 +8,5 @@
   "categories":["navigation","travel"],
   "background_color":"#f4f1e7",
   "theme_color":"#13291f"
+  ,"icons":[{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
 }
