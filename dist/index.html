@@ -84,6 +84,7 @@
             <button data-region="island">Island</button><button data-region="west">West coast</button><button data-region="north">Northern Peninsula</button><button data-region="central">Central</button><button data-region="east">East coast</button>
           </nav>
           <section class="advanced-filters" id="advancedFilters" hidden aria-label="Trail filters">
+            <div class="filter-panel-head"><div><b>Refine this map</b><span>Choose route details and nearby services</span></div><button id="closeFilters" aria-label="Close filters">×</button></div>
             <label>Difficulty<select id="difficultyFilter"><option value="All">Any difficulty</option><option>Easy</option><option>Moderate</option><option>Difficult</option></select></label>
             <label>Maximum distance<select id="distanceFilter"><option value="All">Any distance</option><option value="5">Up to 5 km</option><option value="15">Up to 15 km</option><option value="50">Up to 50 km</option></select></label>
             <label class="check-filter"><input type="checkbox" id="verifiedOnly" /> Official or mapped only</label>
@@ -92,6 +93,7 @@
           </section>
 
           <div class="map" id="trailMap" aria-label="Interactive map of Newfoundland trails">
+            <div class="map-hud" id="mapHud" aria-live="polite"></div>
             <div class="basemap-switcher" aria-label="Choose map view">
               <button class="active" data-basemap="street" aria-pressed="true">Map</button>
               <button data-basemap="satellite" aria-pressed="false">Satellite</button>
