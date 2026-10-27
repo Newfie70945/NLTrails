@@ -77,6 +77,7 @@
             <button class="area-filter-btn" id="areaFilterBtn" aria-pressed="false" title="Only show results inside the current map"><span>⌗</span> This area</button>
             <button class="filter-btn" id="filterBtn"><span>☷</span> Filters <b id="filterCount">0</b></button>
             <button class="track-btn" id="recordRoute"><span>●</span> Record trip</button>
+            <button class="more-btn" id="moreBtn" aria-expanded="false" aria-label="More map actions">•••</button>
             <span class="offline-status" id="offlineStatus" role="status">Offline ready</span>
           </div>
           <div class="category-filter" id="categoryFilter" hidden aria-label="Map category filters"></div>
@@ -84,6 +85,8 @@
             <span>Jump to</span>
             <button data-region="island">Island</button><button data-region="west">West coast</button><button data-region="north">Northern Peninsula</button><button data-region="northwest">Northern west</button><button data-region="straits">Straits</button><button data-region="northeast">Northern east</button><button data-region="tip">St. Anthony + tip</button><button data-region="central">Central</button><button data-region="east">East coast</button>
           </nav>
+          <label class="mobile-region-select"><span>Explore area</span><select id="mobileRegionSelect" aria-label="Choose a map area"><option value="">Choose area…</option><option value="island">All Newfoundland</option><option value="west">West coast</option><option value="north">Northern Peninsula</option><option value="northwest">Northern west</option><option value="straits">Straits</option><option value="northeast">Northern east</option><option value="tip">St. Anthony + tip</option><option value="central">Central</option><option value="east">East coast</option></select></label>
+          <section class="more-menu" id="moreMenu" hidden><button id="moreRecord"><span>●</span><b>Record a trip</b><small>Save a GPS track on this device</small></button><button id="installApp" hidden><span>⇩</span><b>Install NL Trails</b><small>Add the app to your home screen</small></button></section>
           <section class="advanced-filters" id="advancedFilters" hidden aria-label="Trail filters">
             <div class="filter-panel-head"><div><b>Refine this map</b><span>Choose route details and nearby services</span></div><button id="closeFilters" aria-label="Close filters">×</button></div>
             <label>Difficulty<select id="difficultyFilter"><option value="All">Any difficulty</option><option>Easy</option><option>Moderate</option><option>Difficult</option></select></label>
@@ -95,6 +98,12 @@
 
           <div class="map" id="trailMap" aria-label="Interactive map of Newfoundland trails">
             <div class="map-hud" id="mapHud" aria-live="polite"></div>
+            <button class="layers-toggle" id="layersToggle" aria-expanded="false"><span>◫</span> Layers</button>
+            <section class="layers-panel" id="layersPanel" hidden aria-label="Map layers">
+              <div><b>Map style</b><button class="active" data-basemap="street" aria-pressed="true">Street</button><button data-basemap="satellite" aria-pressed="false">Satellite</button></div>
+              <div><b>Places</b><button class="active" data-poi="shelter" aria-pressed="true">Warm-up shacks</button><button data-poi="service" aria-pressed="false">Trail POIs</button></div>
+              <p>Trail records have official, mapped, community or planning labels. Always verify access.</p>
+            </section>
             <div class="basemap-switcher" aria-label="Choose map view">
               <button class="active" data-basemap="street" aria-pressed="true">Map</button>
               <button data-basemap="satellite" aria-pressed="false">Satellite</button>
@@ -118,6 +127,7 @@
             <div class="map-legend" id="mapLegend"><span><i class="walk-dot"></i> Walking</span><span><i class="ski-dot"></i> Skidoo</span><span><i class="atv-dot"></i> ATV</span><span><i class="shared-dot"></i> Multi-use</span></div>
             <button class="legend-toggle" id="legendToggle" aria-label="Expand map legend" aria-expanded="false">Key</button>
             <span class="demo-badge">OFFICIAL + COMMUNITY DATA · VERIFY ACCESS</span>
+            <aside class="map-coachmark" id="mapCoachmark" hidden><button id="dismissCoachmark" aria-label="Dismiss map guide">×</button><b>Know what the map means</b><p>Green is ATV, blue is skidoo and purple is shared use. Check each card’s source label before riding.</p></aside>
           </div>
         </div>
 
@@ -150,6 +160,7 @@
       <div class="detail-visual" id="detailVisual"><span id="detailType">WALKING</span><button id="modalSave" aria-label="Save trail">♡</button></div>
       <div class="detail-content">
         <p class="eyebrow" id="detailRegion"></p><h2 id="modalTitle"></h2>
+        <div class="detail-warning" id="detailWarning" hidden><span>!</span><p></p></div>
         <div class="detail-rating" id="detailRating" hidden></div>
         <div class="detail-stats"><div><small>Distance</small><b id="detailDistance"></b></div><div><small>Difficulty</small><b id="detailDifficulty"></b></div><div><small>Est. time</small><b id="detailTime"></b></div><div><small>Elevation</small><b id="detailElevation"></b></div></div>
         <div class="detail-tabs" role="tablist"><button class="active" data-detail-tab="overview">Overview</button><button data-detail-tab="plan">Plan</button><button data-detail-tab="nearby">Nearby POIs <b id="nearbyCount">0</b></button><button data-detail-tab="community">Community <b id="reviewCount">0</b></button></div>
