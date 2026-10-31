@@ -217,6 +217,9 @@ document.querySelector("#areaFilterBtn").addEventListener("click",()=>{state.map
 map.on("moveend",()=>{if(state.mapBoundsOnly&&!state.focusedTrail)render(false)});
 document.querySelector("#layersToggle").addEventListener("click",event=>{const panel=document.querySelector("#layersPanel"),open=panel.hidden;panel.hidden=!open;event.currentTarget.setAttribute("aria-expanded",String(open))});
 document.querySelector("#moreBtn").addEventListener("click",event=>{const menu=document.querySelector("#moreMenu"),open=menu.hidden;menu.hidden=!open;event.currentTarget.setAttribute("aria-expanded",String(open))});
+function applyTheme(theme){const dark=theme==="dark";document.documentElement.dataset.theme=theme;localStorage.setItem("nl-trails-theme",theme);const button=document.querySelector("#themeToggle");button.querySelector("span").textContent=dark?"☀":"☾";button.setAttribute("aria-label",dark?"Switch to light theme":"Switch to dark theme");button.setAttribute("aria-pressed",String(dark))}
+document.querySelector("#themeToggle").addEventListener("click",()=>applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
+applyTheme(document.documentElement.dataset.theme||"dark");
 document.querySelector("#moreRecord").addEventListener("click",()=>{document.querySelector("#moreMenu").hidden=true;document.querySelector("#recordRoute").click()});
 document.querySelector("#dismissCoachmark").addEventListener("click",()=>{document.querySelector("#mapCoachmark").hidden=true;localStorage.setItem("nl-trails-map-guide","seen")});
 const REGION_VIEWS={island:[[48.75,-56.1],6],west:[[49.55,-57.75],7],north:[[51.05,-56.55],8],northwest:[[50.55,-57.38],9],straits:[[51.12,-56.86],9],northeast:[[50.94,-56.02],9],tip:[[51.48,-55.64],9],central:[[49.05,-55.55],8],east:[[47.65,-53.75],7]};
