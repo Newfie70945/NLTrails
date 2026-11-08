@@ -107,6 +107,7 @@
               <div><b>Map style</b><button class="active" data-basemap="street" aria-pressed="true">Street</button><button data-basemap="satellite" aria-pressed="false">Satellite</button></div>
               <div><b>Places</b><button class="active" data-poi="shelter" aria-pressed="true">Warm-up shacks</button><button data-poi="service" aria-pressed="false">Trail POIs</button></div>
               <div><b>Reference data</b><button id="planningRoadsToggle" aria-pressed="false">Planning roads (not ATV)</button></div>
+              <div class="offline-packs"><b>Offline region packs</b><button data-offline-region="tip">Save St. Anthony + tip</button><button data-offline-region="north">Save Northern Peninsula</button><small id="offlinePackStatus">Routes, POIs and previously viewed tiles stay available offline.</small></div>
               <p>ATV routes require a separate ATV source. NLSF snow lines are never treated as ATV trails. Planning roads are hidden by default.</p>
             </section>
             <div class="basemap-switcher" aria-label="Choose map view">
@@ -123,6 +124,7 @@
               <div><small>DISTANCE</small><b id="tripDistance">0.00 km</b></div>
               <button id="stopRoute">Finish &amp; save</button>
             </section>
+            <section class="draw-panel" id="drawPanel" hidden aria-live="polite"><div><small>DRAWING MISSING TRAIL</small><b id="drawPointCount">0 points</b></div><button id="undoDrawPoint">Undo</button><button id="finishDrawRoute">Finish line</button></section>
             <div class="map-controls">
               <button id="zoomIn" aria-label="Zoom in">+</button><button id="zoomOut" aria-label="Zoom out">−</button>
               <button id="locateMe" aria-label="Find my location">⌖</button>
@@ -171,18 +173,20 @@
         <div class="detail-stats"><div><small>Distance</small><b id="detailDistance"></b></div><div><small>Difficulty</small><b id="detailDifficulty"></b></div><div><small>Est. time</small><b id="detailTime"></b></div><div><small>Elevation</small><b id="detailElevation"></b></div></div>
         <div class="detail-tabs" role="tablist"><button class="active" data-detail-tab="overview">Overview</button><button data-detail-tab="plan">Plan</button><button data-detail-tab="nearby">Nearby POIs <b id="nearbyCount">0</b></button><button data-detail-tab="community">Community <b id="reviewCount">0</b></button></div>
         <section class="detail-panel active" data-detail-panel="overview"><p id="detailDescription"></p><div class="feature-chips" id="detailFeatures"></div></section>
-        <section class="detail-panel" data-detail-panel="plan"><dl class="route-facts"><div><dt>Route type</dt><dd id="detailRouteType"></dd></div><div><dt>Map status</dt><dd id="detailMapStatus"></dd></div><div><dt>Trail use</dt><dd id="detailUse"></dd></div><div><dt>Access</dt><dd id="detailAccess"></dd></div></dl><div class="detail-links" id="detailLinks"></div></section>
+        <section class="detail-panel" data-detail-panel="plan"><dl class="route-facts"><div><dt>Route type</dt><dd id="detailRouteType"></dd></div><div><dt>Map status</dt><dd id="detailMapStatus"></dd></div><div><dt>Trail use</dt><dd id="detailUse"></dd></div><div><dt>Access</dt><dd id="detailAccess"></dd></div><div><dt>Surface</dt><dd id="detailSurface"></dd></div><div><dt>Data reviewed</dt><dd id="detailReviewed"></dd></div></dl><div class="detail-links" id="detailLinks"></div></section>
         <section class="detail-panel" data-detail-panel="nearby"><div class="nearby-list" id="nearbyList"></div></section>
         <section class="detail-panel community-panel" data-detail-panel="community">
           <div class="community-head"><div><small>LOCAL TRAIL NOTES</small><h3>Share what you found</h3></div><button id="suggestFix">Suggest map fix</button></div>
           <div class="review-list" id="reviewList"></div>
+          <form class="condition-form" id="conditionForm"><div><b>Report current conditions</b><small>Shared with everyone using this map</small></div><select id="conditionStatus" required><option value="">Choose condition…</option><option>Clear / passable</option><option>Rough but passable</option><option>Wet / muddy</option><option>Washout or bridge issue</option><option>Blocked / overgrown</option><option>Closed or access restricted</option><option>Snow covered</option></select><textarea id="conditionNotes" maxlength="600" rows="2" placeholder="What did you see? Include the location if useful."></textarea><button type="submit">Share condition</button></form>
+          <div class="condition-reports" id="conditionReports"></div>
           <form class="review-form" id="reviewForm">
             <label><span>Your rating</span><select id="reviewRating" required><option value="">Choose</option><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select></label>
             <label class="review-note"><span>Trail review</span><textarea id="reviewText" rows="3" maxlength="600" placeholder="Conditions, highlights, access, or advice…" required></textarea></label>
             <label class="photo-input"><span>Add a photo</span><input id="reviewPhoto" type="file" accept="image/*" /></label>
             <button type="submit">Post review</button>
           </form>
-          <p class="moderation-note">Beta: reviews and map corrections are timestamped and saved on this device as moderation drafts. Shared moderator sync is the next backend phase.</p>
+          <p class="moderation-note">Condition reports and map corrections sync to the shared trail database. Proposed route lines remain pending until reviewed.</p>
         </section>
         <div class="condition-row"><span class="condition-good">●</span><div><b id="detailCondition"></b><small>Confirm current access and conditions before travel</small></div></div>
         <p class="verified-note" id="verifiedNote"></p>
@@ -202,10 +206,10 @@
           <label>Activity<select id="fixActivity" required><option value="">Choose activity…</option><option>ATV</option><option>Snowmobile</option><option>Walking</option><option>Shared ATV + snowmobile</option><option>Road-trip destination</option><option>Not sure</option></select></label>
         </div>
         <label>What should change?<textarea id="fixText" rows="4" maxlength="900" placeholder="Describe the correct route, access, crossing, hazard or missing place…" required></textarea></label>
-        <div class="correction-location"><div><small>MAP LOCATION</small><b id="fixCoordinates">No location selected</b></div><button type="button" id="pickCorrectionPoint">Tap map</button><button type="button" id="useCorrectionGps">Use my GPS</button></div>
+        <div class="correction-location"><div><small>MAP LOCATION OR ROUTE</small><b id="fixCoordinates">No location selected</b></div><button type="button" id="pickCorrectionPoint">Tap point</button><button type="button" id="drawCorrectionRoute">Draw trail line</button><button type="button" id="useCorrectionGps">Use my GPS</button></div>
         <label class="photo-input"><span>Add supporting photo (optional)</span><input id="fixPhoto" type="file" accept="image/jpeg,image/png,image/webp" /></label>
-        <p class="correction-privacy">Saved only on this device as a moderation draft. It is not published or sent to other users yet.</p>
-        <button class="primary-action" type="submit">Save correction draft <span>→</span></button>
+        <p class="correction-privacy">Submitted to the shared correction queue. New geometry is shown as pending and is never treated as an official trail until reviewed.</p>
+        <button class="primary-action" type="submit">Submit correction <span>→</span></button>
       </form>
     </article>
   </div>
