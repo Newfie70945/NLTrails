@@ -106,7 +106,8 @@
             <section class="layers-panel" id="layersPanel" hidden aria-label="Map layers">
               <div><b>Map style</b><button class="active" data-basemap="street" aria-pressed="true">Street</button><button data-basemap="satellite" aria-pressed="false">Satellite</button></div>
               <div><b>Places</b><button class="active" data-poi="shelter" aria-pressed="true">Warm-up shacks</button><button data-poi="service" aria-pressed="false">Trail POIs</button></div>
-              <p>Evidence labels separate official snow routes, confirmed ATV sources, community reports and unverified planning lines.</p>
+              <div><b>Reference data</b><button id="planningRoadsToggle" aria-pressed="false">Planning roads (not ATV)</button></div>
+              <p>ATV routes require a separate ATV source. NLSF snow lines are never treated as ATV trails. Planning roads are hidden by default.</p>
             </section>
             <div class="basemap-switcher" aria-label="Choose map view">
               <button class="active" data-basemap="street" aria-pressed="true">Map</button>
