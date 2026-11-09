@@ -104,10 +104,12 @@
             <div class="map-hud" id="mapHud" aria-live="polite"></div>
             <button class="layers-toggle" id="layersToggle" aria-expanded="false"><span>◫</span> Layers</button>
             <section class="layers-panel" id="layersPanel" hidden aria-label="Map layers">
+              <header><div><small>MAP SETTINGS</small><b>Layers &amp; offline</b></div><button id="closeLayers" aria-label="Close map layers">×</button></header>
               <div><b>Map style</b><button class="active" data-basemap="street" aria-pressed="true">Street</button><button data-basemap="satellite" aria-pressed="false">Satellite</button></div>
               <div><b>Places</b><button class="active" data-poi="shelter" aria-pressed="true">Warm-up shacks</button><button data-poi="service" aria-pressed="false">Trail POIs</button></div>
               <div><b>Reference data</b><button id="planningRoadsToggle" aria-pressed="false">Planning roads (not ATV)</button></div>
               <div class="offline-packs"><b>Offline region packs</b><button data-offline-region="tip">Save St. Anthony + tip</button><button data-offline-region="north">Save Northern Peninsula</button><small id="offlinePackStatus">Routes, POIs and previously viewed tiles stay available offline.</small></div>
+              <div class="shared-status"><span id="sharedStatusDot"></span><div><b id="sharedStatusTitle">Connecting shared reports…</b><small id="sharedStatusText">Conditions and corrections sync when online.</small></div></div>
               <p>ATV routes require a separate ATV source. NLSF snow lines are never treated as ATV trails. Planning roads are hidden by default.</p>
             </section>
             <div class="basemap-switcher" aria-label="Choose map view">
@@ -119,6 +121,7 @@
               <button data-poi="service" aria-pressed="false"><span>＋</span> POIs</button>
             </div>
             <button class="clear-focus" id="clearFocus" hidden>← All trail starts</button>
+            <aside class="data-notice" id="dataNotice" hidden><span>✓</span><div><b>St. Anthony ATV review active</b><small>Disputed lines are hidden while local geometry is re-verified.</small></div><button id="noticeReport">Add local knowledge</button></aside>
             <section class="trip-panel" id="tripPanel" hidden aria-live="polite">
               <div><span class="recording-dot"></span><small>LIVE GPS TRACK</small><b id="tripTime">00:00</b></div>
               <div><small>DISTANCE</small><b id="tripDistance">0.00 km</b></div>
@@ -134,7 +137,7 @@
             <div class="map-legend" id="mapLegend"><span><i class="walk-dot"></i> Walking</span><span><i class="ski-dot"></i> Skidoo</span><span><i class="atv-dot"></i> ATV</span><span><i class="shared-dot"></i> Multi-use</span></div>
             <button class="legend-toggle" id="legendToggle" aria-label="Expand map legend" aria-expanded="false">Key</button>
             <span class="demo-badge">EVIDENCE-LABELLED DATA · VERIFY ACCESS</span>
-            <aside class="map-coachmark" id="mapCoachmark" hidden><button id="dismissCoachmark" aria-label="Dismiss map guide">×</button><b>Know what the map means</b><p>Green is ATV, blue is skidoo and purple is shared use. Check each card’s source label before riding.</p></aside>
+            <aside class="map-coachmark" id="mapCoachmark" hidden><button id="dismissCoachmark" aria-label="Dismiss map guide">×</button><b>Know what the map means</b><p>Green marks ATV evidence and blue marks NLSF snow routes. Tap a line or card to check its exact source before riding.</p></aside>
           </div>
         </div>
 
@@ -163,6 +166,7 @@
   <div class="modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
     <div class="modal-backdrop" data-close></div>
     <article class="detail-sheet">
+      <span class="modal-handle" aria-hidden="true"></span>
       <button class="close-btn" data-close aria-label="Close trail details">×</button>
       <div class="detail-visual" id="detailVisual"><span id="detailType">WALKING</span><button id="modalSave" aria-label="Save trail">♡</button></div>
       <div class="detail-content">
@@ -178,7 +182,7 @@
         <section class="detail-panel community-panel" data-detail-panel="community">
           <div class="community-head"><div><small>LOCAL TRAIL NOTES</small><h3>Share what you found</h3></div><button id="suggestFix">Suggest map fix</button></div>
           <div class="review-list" id="reviewList"></div>
-          <form class="condition-form" id="conditionForm"><div><b>Report current conditions</b><small>Shared with everyone using this map</small></div><select id="conditionStatus" required><option value="">Choose condition…</option><option>Clear / passable</option><option>Rough but passable</option><option>Wet / muddy</option><option>Washout or bridge issue</option><option>Blocked / overgrown</option><option>Closed or access restricted</option><option>Snow covered</option></select><textarea id="conditionNotes" maxlength="600" rows="2" placeholder="What did you see? Include the location if useful."></textarea><button type="submit">Share condition</button></form>
+          <form class="condition-form" id="conditionForm"><div class="condition-form-head"><span>●</span><div><b>Report current conditions</b><small>Shared with everyone using this map</small></div></div><select id="conditionStatus" required><option value="">Choose condition…</option><option>Clear / passable</option><option>Rough but passable</option><option>Wet / muddy</option><option>Washout or bridge issue</option><option>Blocked / overgrown</option><option>Closed or access restricted</option><option>Snow covered</option></select><textarea id="conditionNotes" maxlength="600" rows="2" placeholder="What did you see? Include the location if useful."></textarea><button type="submit"><span>Share condition</span></button></form>
           <div class="condition-reports" id="conditionReports"></div>
           <form class="review-form" id="reviewForm">
             <label><span>Your rating</span><select id="reviewRating" required><option value="">Choose</option><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select></label>
@@ -198,8 +202,10 @@
   <div class="modal correction-modal" id="correctionModal" role="dialog" aria-modal="true" aria-labelledby="correctionTitle" hidden>
     <div class="modal-backdrop" data-correction-close></div>
     <article class="correction-sheet">
+      <span class="modal-handle" aria-hidden="true"></span>
       <button class="close-btn" data-correction-close aria-label="Close map correction">×</button>
       <div class="correction-head"><span>⌖</span><div><p class="eyebrow">COMMUNITY MAP CORRECTION</p><h2 id="correctionTitle">Report a map issue</h2><small id="correctionContext">Choose an issue and mark its location.</small></div></div>
+      <div class="correction-steps" aria-label="Correction steps"><span class="active">1 <b>Describe</b></span><i></i><span>2 <b>Locate</b></span><i></i><span>3 <b>Submit</b></span></div>
       <form id="correctionForm">
         <div class="correction-grid">
           <label>What needs fixing?<select id="fixType" required><option value="">Choose an issue…</option><option>Missing trail</option><option>Route line is wrong</option><option>Trail activity is wrong</option><option>Gate or access restriction</option><option>Bridge or water crossing</option><option>Washout or hazard</option><option>Temporary or permanent closure</option><option>Missing or incorrect POI</option></select></label>
